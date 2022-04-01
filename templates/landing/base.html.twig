@@ -20,7 +20,11 @@
     <div class="container">
         <span class="navbar-brand">BlaBlaArticle</span>
         {% block menu_items %}{% endblock %}
-        <a class="btn btn-primary" href="{{ path('app_landing_index') }}">Войти</a>
+        {% if app.user %}
+            <a class="btn btn-primary" href="{{ path('app_logout') }}">Выйти</a>
+        {% else %}
+            <a class="btn btn-primary" href="{{ path('app_login') }}">Войти</a>
+        {% endif %}
     </div>
 </nav>
 
