@@ -1,0 +1,66 @@
+{% apply inline_css(source('@css/email.css')) %}
+<!doctype html>
+<html lang="ru">
+<head>
+
+<meta name="viewport" content="width=device-width"/>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Генератор статей</title>
+
+</head>
+<body>
+
+<table class="head-wrap">
+    <tbody>
+    <tr>
+        <td></td>
+        <td class="header container">
+            <div class="content">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td><h6 class="collapse">{{ email.subject }}</h6></td>
+                        <td align="right"><a class="collapse" href="{{ url('app_landing_index') }}">Генератор статей</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>
+
+
+<table class="body-wrap">
+    <tr>
+        <td></td>
+        <td class="container">
+            {% block content %}{% endblock %}
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+<table class="footer-wrap">
+    <tr>
+        <td></td>
+        <td class="container">
+            <div class="content">
+                <table>
+                    <tr>
+                        <td align="center">
+                            <p class="gray">С уважением, Генератор статей</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+        <td></td>
+    </tr>
+</table>
+
+</body>
+</html>
+{% endapply %}
