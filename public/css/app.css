@@ -387,3 +387,7 @@ body.signin-body {
     opacity: 1;
   }
 }
+
+.invalid-feedback{
+  padding-top: 7px;
+}
