@@ -16,8 +16,16 @@
             <div class="card card-signin my-5">
               <div class="card-body">
                   <h5 class="card-title text-center">{{ block('title') }}</h5>
+                  {% if app.session.flashBag.has('error') %}
+                      {% for flash_error in app.flashes('error') %}
+                          <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                      {% endfor %}
+                  {% elseif app.session.flashBag.has('success') %}
+                      {% for flash_success in app.flashes('success') %}
+                          <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+                      {% endfor %}
+                  {% endif %}
 {% endblock %}
-
 {% block content %}{% endblock %}
 
 {% block footer %}
