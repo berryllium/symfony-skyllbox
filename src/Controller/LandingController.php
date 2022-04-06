@@ -42,7 +42,6 @@ class LandingController extends AbstractController
                 $anonymousArticle = $form->getData();
                 $uuid = Uuid::v4()->toRfc4122();
                 $anonymousArticle
-                    ->setBody('Обработанный текст, содерждащий тестовое слово')
                     ->setUserId($uuid);
                 $entityManager->persist($anonymousArticle);
                 $entityManager->flush();
@@ -54,7 +53,9 @@ class LandingController extends AbstractController
         }
         return $this->render('landing/try.html.twig', [
             'form' => $form->createView(),
-            'article' => $anonymousArticle->getId() ? $anonymousArticle : null
+            'article' => $anonymousArticle->getId() ? $anonymousArticle : null,
+            'text' => $anonymousArticle->getId() ?
+                'Обработанный текст, содерждащий тестовое слово: ' . $anonymousArticle->getWord() : null
         ]);
     }
 }

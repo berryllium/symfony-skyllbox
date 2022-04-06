@@ -28,11 +28,6 @@ class AnonymousArticle
     private $title;
 
     /**
-     * @ORM\Column(type="text")
-     */
-    private $body;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $word;
@@ -62,18 +57,6 @@ class AnonymousArticle
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getBody(): ?string
-    {
-        return $this->body;
-    }
-
-    public function setBody(string $body): self
-    {
-        $this->body = $body;
 
         return $this;
     }
