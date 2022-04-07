@@ -2,14 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\AnonymousArticle;
-use App\Entity\Article;
+use App\Form\Model\AnonymousArticleFormModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotNull;
 
 class AnonymousArticleFormType extends AbstractType
 {
@@ -19,30 +17,19 @@ class AnonymousArticleFormType extends AbstractType
         $word_attr = ['placeholder' => 'Продвигаемое слово'];
         $submit_attr = ['class' => 'btn btn-lg btn-primary btn-block text-uppercase'];
         if($options && isset($options['data'])) {
-            /** @var AnonymousArticle $article */
             $article = $options['data'];
             $title_attr['disabled'] = $word_attr['disabled'] = $submit_attr['disabled'] = true;
-            $title_attr['value'] = $article->getTitle();
-            $word_attr['value'] = $article->getWord();
+            $title_attr['value'] = $article->title;
+            $word_attr['value'] = $article->word;
         }
         $builder
             ->add('title', null, [
                 'label' => 'Заголовок статьи',
                 'attr' => $title_attr,
-                'constraints' => [
-                    new NotNull([
-                        'message' => 'Пожалуйста введите заголовок',
-                    ]),
-                ]
             ])
             ->add('word', TextType::class, [
                 'label' => 'Продвигаемое слово',
                 'attr' => $word_attr,
-                'constraints' => [
-                    new NotNull([
-                        'message' => 'Пожалуйста введите слово',
-                    ]),
-                ]
             ])
             ->add('save', SubmitType::class, [
                 'attr' => $submit_attr,
@@ -54,7 +41,7 @@ class AnonymousArticleFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => AnonymousArticle::class,
+            'data_class' => AnonymousArticleFormModel::class,
         ]);
     }
 }
