@@ -1,0 +1,35 @@
+{% block header %}
+    <!DOCTYPE html>
+    <html lang="ru">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <title>{% block title %}BlaBlaArticle - Лучший генератор статей{% endblock %}</title>
+
+        {% block style %}
+            <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        {% endblock %}
+    </head>
+
+    <body>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+    {% block footer_scripts %}
+        <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+        <script src="{{ asset('js/scripts.js') }}"></script>
+    {% endblock %}
+
+    </body>
+
+    </html>
+{% endblock %}

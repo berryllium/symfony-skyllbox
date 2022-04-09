@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block header %}
+    {{ parent() }}
+    <div class="d-flex" id="wrapper">
+    {% block left_menu %}
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">BlaBlaArticle</div>
+            <div class="list-group list-group-flush">
+                <a href="{{ path('app_dashboard') }}"           class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard' ? 'active' : 'bg-light' }}">Рабочий стол</a>
+                <a href="{{ path('app_dashboard_create') }}"    class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_create' ? 'active' : 'bg-light' }}">Создать статью</a>
+                <a href="{{ path('app_dashboard_history') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_history' ? 'active' : 'bg-light' }}">История статей</a>
+                <a href="{{ path('app_dashboard_subscribe') }}" class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_subscribe' ? 'active' : 'bg-light' }}">Подписка</a>
+                <a href="{{ path('app_dashboard_profile') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_profile' ? 'active' : 'bg-light' }}">Профиль</a>
+                <a href="{{ path('app_dashboard_modules') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_modules' ? 'active' : 'bg-light' }}">Модули генератора</a>
+            </div>
+        </div>
+        <div id="page-content-wrapper">
+        {% block top_menu %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <button class="btn btn-primary" id="menu-toggle"><span>Скрыть меню</span></button>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Показать/Скрыть навигацию">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Выйти</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid">
+                <h1 class="mt-4">{% block title %}{% endblock %}</h1>
+        {% endblock %}
+    {% endblock %}
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+
+{% block footer %}
+            </div>
+        </div>
+    </div>
+    {% block footer_scripts %}
+        {{ parent() }}
+        <script src="{{ asset('js/dashboard.js') }}"></script>
+    {% endblock %}
+{% endblock %}
