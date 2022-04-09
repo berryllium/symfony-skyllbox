@@ -44,8 +44,7 @@ class LandingController extends AbstractController
         }
         return $this->render('landing/try.html.twig', [
             'form' => $form->createView(),
-            'article' => $anonymousArticle,
-            'text' => $anonymousArticle ? 'Статья, содерждащая тестовое слово: ' . $anonymousArticle->word : null
+            'article' => $anonymousArticle
         ]);
     }
 }
