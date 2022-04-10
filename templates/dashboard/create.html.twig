@@ -1,2 +1,73 @@
 {% extends 'dashboard/base.html.twig' %}
 {% block title %}Создание статей{% endblock %}
+{% block content %}
+    {{ form_start(form) }}
+        {{ form_row(form.subject) }}
+        <div class="form-label-group">
+            {{ form_widget(form.title) }}
+            {{ form_label(form.title) }}
+        </div>
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-title">Ключевое слово</p>
+                <div class="form-label-group">
+                    {{ form_widget(form.keyword0) }}
+                    {{ form_label(form.keyword0) }}
+                </div>
+                <div class="form-label-group">
+                    {{ form_widget(form.keyword1) }}
+                    {{ form_label(form.keyword1) }}
+                </div>
+
+                ...
+
+                <div class="form-label-group">
+                    {{ form_widget(form.keyword7) }}
+                    {{ form_label(form.keyword7) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <div class="form-label-group">
+                    {{ form_widget(form.sizeFrom) }}
+                    {{ form_label(form.sizeFrom) }}
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-label-group">
+                    {{ form_widget(form.sizeTo) }}
+                    {{ form_label(form.sizeTo) }}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="card-title">Продвигаемые слова</p>
+                {% for key, value in form.words.children %}
+                <div class="row">
+                    <div class="col">
+                        <div class="form-label-group">
+                            {{ form_widget(form.words.children[key]) }}
+                            {{ form_label(form.words.children[key]) }}
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-label-group">
+                            {{ form_widget(form.wordsCount.children[key]) }}
+                            {{ form_label(form.wordsCount.children[key]) }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                ...
+            </div>
+        </div>
+
+        {{ form_row(form.images) }}
+        {{ form_row(form.submit) }}
+    {{ form_end(form) }}
+{% endblock %}

@@ -15,3 +15,7 @@
     }
   });
 })(jQuery);
+
+$('#article_form_images').on('change',function(){
+  $(this).next('.custom-file-label').html('Изображения загружены');
+})

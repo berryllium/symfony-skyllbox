@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Form\ArticleFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,8 +24,10 @@ class DashboardController extends AbstractController
      */
     public function create(): Response
     {
+        $form = $this->createForm(ArticleFormType::class);
+
         return $this->render('dashboard/create.html.twig', [
-            'controller_name' => 'DashboardController',
+            'form' => $form->createView(),
         ]);
     }
 
