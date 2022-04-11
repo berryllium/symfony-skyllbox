@@ -22,3 +22,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Для всех реализаций данного интерфейса устанавливаем тэг, по которому определяем классы-тематики
+
+    App\Service\GuitarSubject:
+        tags: ['diplom.subject']
+
+    App\Service\PhpSubject:
+        tags: [ 'diplom.subject' ]

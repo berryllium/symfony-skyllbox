@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "471e58e809570e2a503640862827e49d",
+    "content-hash": "af3577f72664910976bcb453441d07d9",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -54,6 +54,48 @@
                 "source": "https://github.com/Behat/Transliterator/tree/v1.5.0"
             },
             "time": "2022-03-30T09:27:43+00:00"
+        },
+        {
+            "name": "berryllium/diplom-subject",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/berryllium/diplom-subject.git",
+                "reference": "dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/berryllium/diplom-subject/zipball/dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8",
+                "reference": "dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "default-branch": true,
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Diplom\\ArticleSubjectProviderBundle\\": "/src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Горкун Дмитрий",
+                    "email": "gorkundp@yandex.ru",
+                    "homepage": "https://github.com/berryllium",
+                    "role": "Creator"
+                }
+            ],
+            "description": "Тематики статей",
+            "support": {
+                "source": "https://github.com/berryllium/diplom-subject/tree/master",
+                "issues": "https://github.com/berryllium/diplom-subject/issues"
+            },
+            "time": "2022-04-09T19:01:45+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -7503,7 +7545,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "berryllium/diplom-subject": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
