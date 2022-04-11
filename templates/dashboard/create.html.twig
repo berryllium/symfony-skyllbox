@@ -1,73 +1,89 @@
 {% extends 'dashboard/base.html.twig' %}
 {% block title %}Создание статей{% endblock %}
 {% block content %}
-    {{ form_start(form) }}
-        {{ form_row(form.subject) }}
-        <div class="form-label-group">
-            {{ form_widget(form.title) }}
-            {{ form_label(form.title) }}
-        </div>
-        <div class="card mb-4">
-            <div class="card-body">
-                <p class="card-title">Ключевое слово</p>
+    <div class="row">
+        <div class="col-xl-6">
+            {{ form_start(form) }}
+                {{ form_row(form.subject) }}
                 <div class="form-label-group">
-                    {{ form_widget(form.keyword0) }}
-                    {{ form_label(form.keyword0) }}
+                    {{ form_widget(form.title) }}
+                    {{ form_label(form.title) }}
                 </div>
-                <div class="form-label-group">
-                    {{ form_widget(form.keyword1) }}
-                    {{ form_label(form.keyword1) }}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-title">Ключевое слово</p>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword0) }}
+                            {{ form_label(form.keyword0) }}
+                        </div>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword1) }}
+                            {{ form_label(form.keyword1) }}
+                        </div>
+
+                        ...
+
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword7) }}
+                            {{ form_label(form.keyword7) }}
+                        </div>
+                    </div>
                 </div>
 
-                ...
-
-                <div class="form-label-group">
-                    {{ form_widget(form.keyword7) }}
-                    {{ form_label(form.keyword7) }}
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <div class="form-label-group">
-                    {{ form_widget(form.sizeFrom) }}
-                    {{ form_label(form.sizeFrom) }}
-                </div>
-            </div>
-            <div class="col">
-                <div class="form-label-group">
-                    {{ form_widget(form.sizeTo) }}
-                    {{ form_label(form.sizeTo) }}
-                </div>
-            </div>
-        </div>
-
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <p class="card-title">Продвигаемые слова</p>
-                {% for key, value in form.words.children %}
                 <div class="row">
                     <div class="col">
                         <div class="form-label-group">
-                            {{ form_widget(form.words.children[key]) }}
-                            {{ form_label(form.words.children[key]) }}
+                            {{ form_widget(form.sizeFrom) }}
+                            {{ form_label(form.sizeFrom) }}
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-label-group">
-                            {{ form_widget(form.wordsCount.children[key]) }}
-                            {{ form_label(form.wordsCount.children[key]) }}
+                            {{ form_widget(form.sizeTo) }}
+                            {{ form_label(form.sizeTo) }}
                         </div>
                     </div>
                 </div>
-                {% endfor %}
-                ...
+
+
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <p class="card-title">Продвигаемые слова</p>
+                        {% for key, value in form.words.children %}
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-label-group">
+                                    {{ form_widget(form.words.children[key]) }}
+                                    {{ form_label(form.words.children[key]) }}
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-label-group">
+                                    {{ form_widget(form.wordsCount.children[key]) }}
+                                    {{ form_label(form.wordsCount.children[key]) }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        ...
+                    </div>
+                </div>
+                {{ form_row(form.images) }}
+                {{ form_row(form.submit) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% if article is not null %}
+        <hr>
+        <h2 class="mt-4">Ваша статья</h2>
+        <hr>
+        <div class="row">
+            <div class="col-xl-6">
+                <h1 class="mt-4">{{ article.title }}</h1>
+                {{ article.body|raw }}
             </div>
         </div>
+    {% endif %}
 
-        {{ form_row(form.images) }}
-        {{ form_row(form.submit) }}
-    {{ form_end(form) }}
 {% endblock %}

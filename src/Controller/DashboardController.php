@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Form\ArticleFormType;
+use App\Service\ArticleGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -22,12 +24,17 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/create", name="app_dashboard_create")
      */
-    public function create(): Response
+    public function create(Request $request, ArticleGenerator $generator): Response
     {
         $form = $this->createForm(ArticleFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article = $generator->generate($form->getData(), $this->getUser());
+        }
 
         return $this->render('dashboard/create.html.twig', [
             'form' => $form->createView(),
+            'article' => $article ?? null
         ]);
     }
 
