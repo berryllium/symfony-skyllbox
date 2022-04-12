@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Subject;
 
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectInterface;
 
@@ -24,7 +24,12 @@ class AbstractSubject implements ArticleSubjectInterface
 
     public function getTitles($count = 1): array
     {
-        return $this->getItems('name', $count);
+        return $this->getItems('titles', $count);
+    }
+
+    public function getTitle() :string {
+        $titles = $this->getTitles();
+        return array_pop($titles);
     }
 
     public function getParagraphs(int $count): array
