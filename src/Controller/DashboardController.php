@@ -8,17 +8,22 @@ use App\Form\ArticleFormType;
 use App\Repository\ArticleRepository;
 use App\Service\ArticleGenerator;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
+/**
+ * @IsGranted("IS_AUTHENTICATED")
+ */
 class DashboardController extends AbstractController
 {
     /**
      * @Route("/dashboard", name="app_dashboard")
      */
-    public function index(): Response
+    public function index(Security $security): Response
     {
         return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'DashboardController',
@@ -65,10 +70,16 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/subscribe", name="app_dashboard_subscribe")
      */
-    public function subscribe(): Response
+    public function subscribe(Security $security): Response
     {
+        $tariff = null;
+        if($security->isGranted('TARIFF_PRO')) {
+            $tariff = 'pro';
+        } elseif($security->isGranted('TARIFF_PLUS')) {
+            $tariff = 'plus';
+        }
         return $this->render('dashboard/subscribe.html.twig', [
-            'controller_name' => 'DashboardController',
+            'tariff' => $tariff,
         ]);
     }
 

@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private $roles;
 
     /**
      * @var string The hashed password
@@ -53,6 +53,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToMany(targetEntity=Article::class, mappedBy="author")
      */
     private $articles;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $subscribe_to;
 
     public function __construct()
     {
@@ -110,6 +115,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = $roles;
 
+        return $this;
+    }
+
+    public function addRole(string $role) : self
+    {
+        if(!in_array($role, $this->getRoles())) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    public function removeRole(string $role) : self {
+        $roles = $this->getRoles();
+        foreach ($roles as $k => $v) {
+            if($v == $role) {
+                unset($roles[$k]);
+                $this->setRoles($roles);
+                break;
+            }
+        }
         return $this;
     }
 
@@ -198,6 +223,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $article->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubscribeTo(): ?\DateTimeInterface
+    {
+        return $this->subscribe_to;
+    }
+
+    public function setSubscribeTo(?\DateTimeInterface $subscribe_to): self
+    {
+        $this->subscribe_to = $subscribe_to;
 
         return $this;
     }

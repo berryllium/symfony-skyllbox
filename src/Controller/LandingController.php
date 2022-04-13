@@ -18,6 +18,9 @@ class LandingController extends AbstractController
      */
     public function index(): Response
     {
+        if($this->getUser()) {
+            return $this->redirectToRoute('app_dashboard');
+        }
         return $this->render('landing/index.html.twig', [
             'controller_name' => 'MainController',
         ]);
@@ -28,6 +31,9 @@ class LandingController extends AbstractController
      */
     public function try(Request $request): Response
     {
+        if($this->getUser()) {
+            return $this->redirectToRoute('app_dashboard');
+        }
         $cookie = $request->cookies->get('anonymous_article');
         $anonymousArticle = $cookie ? unserialize($cookie): null;
         if($anonymousArticle) {
