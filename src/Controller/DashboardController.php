@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Article;
+use App\Entity\User;
 use App\Form\ArticleFormType;
+use App\Repository\ArticleRepository;
 use App\Service\ArticleGenerator;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,10 +45,20 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/history", name="app_dashboard_history")
      */
-    public function history(): Response
+    public function history(ArticleRepository $repository, PaginatorInterface $paginator, Request $request): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $pageSize = 5;
+
+        $pagination = $paginator->paginate(
+            $repository->getUserArticles($user->getId()),
+            $request->get('page', 1),
+            $pageSize
+        );
+
         return $this->render('dashboard/history.html.twig', [
-            'controller_name' => 'DashboardController',
+            'pagination' => $pagination,
         ]);
     }
 
@@ -75,6 +89,16 @@ class DashboardController extends AbstractController
     {
         return $this->render('dashboard/modules.html.twig', [
             'controller_name' => 'DashboardController',
+        ]);
+    }
+
+    /**
+     * @Route("/dashboard/article/{slug}", name="app_dashboard_article")
+     */
+    public function article(Article $article): Response
+    {
+        return $this->render('dashboard/article.html.twig', [
+            'article' => $article,
         ]);
     }
 }
