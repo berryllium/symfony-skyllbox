@@ -46,9 +46,6 @@ security:
         # - { path: ^/profile, roles: ROLE_USER }
 
     role_hierarchy:
-        TARIFF_PLUS: ROLE_USER
-        TARIFF_PRO: TARIFF_PLUS
-        ROLE_ADMIN: TARIFF_PRO
         ROLE_SUPER_ADMIN: [ ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH ]
 
 when@test:

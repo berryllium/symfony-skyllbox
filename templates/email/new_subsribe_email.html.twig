@@ -1,0 +1,13 @@
+{% extends 'email/base.html.twig' %}
+{% block content %}
+    <div class="content">
+        <table>
+            <tr>
+                <td>
+                    <h1>Уважаемы, {{ email.toName }}! Подписка оформлена!</h1>
+                    <p class="lead">Вы оформили подписку на тариф {{ user.tariff|upper }} до {{ user.subscribeTo|date('d.m.Y') }}</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}

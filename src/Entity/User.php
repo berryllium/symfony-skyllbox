@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles;
+    private $roles = [];
 
     /**
      * @var string The hashed password
@@ -58,6 +58,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $subscribe_to;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tariff;
 
     public function __construct()
     {
@@ -235,6 +240,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setSubscribeTo(?\DateTimeInterface $subscribe_to): self
     {
         $this->subscribe_to = $subscribe_to;
+
+        return $this;
+    }
+
+    public function getTariff(): ?string
+    {
+        return $this->tariff;
+    }
+
+    public function setTariff(?string $tariff): self
+    {
+        $this->tariff = $tariff;
 
         return $this;
     }

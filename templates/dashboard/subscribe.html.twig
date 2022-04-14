@@ -5,7 +5,11 @@
 
         <div class="col-xl-8">
             {% if(tariff is not null) %}
-                <div class="alert alert-success" role="alert">Подписка {{ tariff }} оформлена, до {{ app.user.subscribeTo }}</div>
+                {% if date() >  app.user.subscribeTo %}
+                    <div class="alert alert-success" role="alert">Подписка {{ tariff|upper }} оформлена, до {{ app.user.subscribeTo|date('d.m.Y') }}</div>
+                {% else %}
+                    <div class="alert alert-danger" role="alert">Подписка на тариф {{ tariff|upper }} закончилась</div>
+                {% endif %}
             {% endif %}
             <section class="pricing py-2 row">
                 <div class="container">
@@ -13,8 +17,8 @@
                         <div class="col-lg-4">
                             <div class="card mb-5 mb-lg-0">
                                 <div class="card-body">
-                                    <h5 class="card-title text-uppercase text-center text-{{ tariff is null ? 'warning' : 'muted' }}">
-                                        {% if tariff is null %}<i class="fas fa-check"></i>{% endif %} Free
+                                    <h5 class="card-title text-uppercase text-center text-{{ tariff== '' ? 'warning' : 'muted' }}">
+                                        {% if tariff== '' %}<i class="fas fa-check"></i>{% endif %} Free
                                     </h5>
                                     <h6 class="card-price text-center">$0<span class="period">/неделя</span></h6>
                                     <hr>
@@ -24,7 +28,7 @@
                                         <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Продвинутые возможности генератора</li>
                                         <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
                                     </ul>
-                                    {% if is_granted('TARIFF_PLUS') == false %}
+                                    {% if tariff== '' %}
                                         <a href="javascript:void(0)" class="btn btn-block btn-secondary text-uppercase" disabled="">Текущий уровень</a>
                                     {% endif %}
                                 </div>
@@ -44,9 +48,9 @@
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
                                         <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Свои модули</li>
                                     </ul>
-                                    {% if is_granted('TARIFF_PLUS') %}
+                                    {% if tariff == 'plus' %}
                                         <a href="javascript:void(0)" class="btn btn-block btn-secondary text-uppercase" disabled="">Текущий уровень</a>
-                                    {% else %}
+                                    {% elseif tariff== '' %}
                                         <a href="{{ path('app_subscribe', {'tariff': 'plus'}) }}" class="btn btn-block btn-primary text-uppercase">Оформить</a>
                                     {% endif %}
                                 </div>
@@ -55,7 +59,7 @@
                         <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title text-muted text-uppercase text-center  text-{{ tariff == 'pro' ? 'warning' : 'muted' }}">
+                                    <h5 class="card-title text-uppercase text-center  text-{{ tariff == 'pro' ? 'warning' : 'muted' }}">
                                         {% if tariff == 'pro' %}<i class="fas fa-check"></i>{% endif %} Pro
                                     </h5>
                                     <h6 class="card-price text-center">$49<span class="period">/неделя</span></h6>
@@ -66,7 +70,7 @@
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Продвинутые возможности генератора</li>
                                         <li><span class="fa-li"><i class="fas fa-check"></i></span>Свои модули</li>
                                     </ul>
-                                    {% if is_granted('TARIFF_PRO') %}
+                                    {% if tariff == 'pro' %}
                                         <a href="javascript:void(0)" class="btn btn-block btn-secondary text-uppercase" disabled="">Текущий уровень</a>
                                     {% else %}
                                         <a href="{{ path('app_subscribe', {'tariff': 'pro'}) }}" class="btn btn-block btn-primary text-uppercase">Оформить</a>
