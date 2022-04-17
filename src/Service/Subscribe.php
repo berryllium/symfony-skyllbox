@@ -3,16 +3,20 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Event\UserSubscribedEvent;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Subscribe
 {
     private $em;
+    private EventDispatcherInterface $dispatcher;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, EventDispatcherInterface $dispatcher)
     {
         $this->em = $em;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -26,6 +30,7 @@ class Subscribe
 
         $this->em->persist($user);
         $this->em->flush();
+        $this->dispatcher->dispatch(new UserSubscribedEvent($user));
         return true;
     }
 }

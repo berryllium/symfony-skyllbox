@@ -26,7 +26,6 @@ class DashboardController extends AbstractController
      */
     public function index(Security $security): Response
     {
-        dump($security->isGranted('TARIFF_PLUS'));
         return $this->render('dashboard/index.html.twig', [
             'controller_name' => 'DashboardController',
         ]);
