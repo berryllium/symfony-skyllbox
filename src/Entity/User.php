@@ -54,6 +54,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $articles;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $subscribe_to;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $tariff;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
@@ -110,6 +120,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = $roles;
 
+        return $this;
+    }
+
+    public function addRole(string $role) : self
+    {
+        if(!in_array($role, $this->getRoles())) {
+            $this->roles[] = $role;
+        }
+        return $this;
+    }
+
+    public function removeRole(string $role) : self {
+        $roles = $this->getRoles();
+        foreach ($roles as $k => $v) {
+            if($v == $role) {
+                unset($roles[$k]);
+                $this->setRoles($roles);
+                break;
+            }
+        }
         return $this;
     }
 
@@ -198,6 +228,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $article->setAuthor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSubscribeTo(): ?\DateTimeInterface
+    {
+        return $this->subscribe_to;
+    }
+
+    public function setSubscribeTo(?\DateTimeInterface $subscribe_to): self
+    {
+        $this->subscribe_to = $subscribe_to;
+
+        return $this;
+    }
+
+    public function getTariff(): ?string
+    {
+        return $this->tariff;
+    }
+
+    public function setTariff(?string $tariff): self
+    {
+        $this->tariff = $tariff;
 
         return $this;
     }
