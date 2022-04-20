@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\User;
 use App\Form\ArticleFormType;
+use App\Form\RegistrationFormType;
 use App\Repository\ArticleRepository;
 use App\Service\ArticleGenerator;
 use App\Service\Subscribe;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -84,10 +86,20 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/profile", name="app_dashboard_profile")
      */
-    public function profile(): Response
+    public function profile(Request $request, EntityManagerInterface $em): Response
     {
+        $user = $this->getUser();
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success', 'Профиль успешно изменен');
+        }
+
         return $this->render('dashboard/profile.html.twig', [
-            'controller_name' => 'DashboardController',
+            'form' => $form->createView(),
+            'user' => $this->getUser()
         ]);
     }
 
