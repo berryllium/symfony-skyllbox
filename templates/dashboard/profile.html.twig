@@ -22,9 +22,24 @@
                 </div>
             </div>
 
-            {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Изменить</button>
+            {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
+            <div class="form-label-group">
+                {{ form_widget(form.name) }}
+                {{ form_label(form.name) }}
+            </div>
+            <div class="form-label-group">
+                {{ form_widget(form.email) }}
+                {{ form_label(form.email) }}
+            </div><div class="form-label-group">
+                {{ form_widget(form.pass.first) }}
+                {{ form_label(form.pass.first) }}
+            </div><div class="form-label-group">
+                {{ form_widget(form.pass.second) }}
+                {{ form_label(form.pass.second) }}
+            </div>
+
+
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Изменить</button>
             {{ form_end(form) }}
         </div>
     </div>

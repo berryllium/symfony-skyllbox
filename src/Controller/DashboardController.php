@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Entity\User;
 use App\Form\ArticleFormType;
-use App\Form\RegistrationFormType;
+use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
 use App\Service\ArticleGenerator;
 use App\Service\Subscribe;
@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -40,8 +41,11 @@ class DashboardController extends AbstractController
     {
         $form = $this->createForm(ArticleFormType::class);
         $form->handleRequest($request);
+        $user = $this->getUser();
+
+        /** @var User $user */
         if ($form->isSubmitted() && $form->isValid()) {
-            $article = $generator->generate($form->getData(), $this->getUser());
+            $article = $generator->generate($form->getData(), $user);
         }
 
         return $this->render('dashboard/create.html.twig', [
@@ -86,12 +90,22 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/profile", name="app_dashboard_profile")
      */
-    public function profile(Request $request, EntityManagerInterface $em): Response
+    public function profile(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasher): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(ProfileFormType::class, $user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $new_password = $form->get('pass')->get('first')->getData();
+            if($new_password) {
+                $user->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $user,
+                        $new_password
+                    )
+                );
+            }
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', 'Профиль успешно изменен');
