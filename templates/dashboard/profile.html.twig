@@ -1,2 +1,46 @@
 {% extends 'dashboard/base.html.twig' %}
 {% block title %}Профиль{% endblock %}
+{% block content %}
+    <div class="row">
+
+        <div class="col-xl-6">
+            {% if app.session.flashBag.has('error') %}
+                {% for flash_error in app.flashes('error') %}
+                    <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                {% endfor %}
+            {% elseif app.session.flashBag.has('success') %}
+                {% for flash_success in app.flashes('success') %}
+                    <div class="alert alert-success" role="alert">{{ flash_success }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="card my-4">
+                <div class="card-body">
+
+                    <p>Ваш API токен: {{ app.user.apiToken.token }}</p>
+                    <a href="{{ path('app_generate_token') }}" class="btn btn-outline-primary">Создать новый</a>
+                </div>
+            </div>
+
+            {{ form_start(form, {'attr': {'class': 'form-signin'}}) }}
+            <div class="form-label-group">
+                {{ form_widget(form.name) }}
+                {{ form_label(form.name) }}
+            </div>
+            <div class="form-label-group">
+                {{ form_widget(form.email) }}
+                {{ form_label(form.email) }}
+            </div><div class="form-label-group">
+                {{ form_widget(form.pass.first) }}
+                {{ form_label(form.pass.first) }}
+            </div><div class="form-label-group">
+                {{ form_widget(form.pass.second) }}
+                {{ form_label(form.pass.second) }}
+            </div>
+
+
+            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Изменить</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

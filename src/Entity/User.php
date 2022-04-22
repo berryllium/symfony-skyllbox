@@ -64,9 +64,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $tariff;
 
+    /**
+     * @ORM\OneToMany(targetEntity=ApiToken::class, mappedBy="user")
+     */
+    private $token;
+
+    /**
+     * @ORM\OneToOne(targetEntity=ApiToken::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $apiToken;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
+        $this->token = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -252,6 +263,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTariff(?string $tariff): self
     {
         $this->tariff = $tariff;
+
+        return $this;
+    }
+
+    public function getApiToken(): ?ApiToken
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(ApiToken $apiToken): self
+    {
+        // set the owning side of the relation if necessary
+        if ($apiToken->getUser() !== $this) {
+            $apiToken->setUser($this);
+        }
+
+        $this->apiToken = $apiToken;
 
         return $this;
     }
