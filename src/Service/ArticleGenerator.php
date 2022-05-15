@@ -33,6 +33,24 @@ class ArticleGenerator
             $body .= '<p>' . $p . '</p>';
         }
 
+        $replacement = [];
+
+        preg_match_all('#\{\{(\s*[^}]+\s*)\}\}#', $body, $matches);
+        foreach ($matches[1] as $k => $match) {
+            $placeholder = explode('|', trim($match));
+            $variable = $placeholder[0];
+            $filter = $placeholder[1];
+            if($variable == 'keyword') {
+                $property = $variable;
+                preg_match('#morph\((.+)\)#', $filter, $i);
+                $i = trim($i[1]) ?: 0;
+                $property = $property . $i;
+                $value = $model->$property;
+            }
+            $replacement[$matches[0][$k]] = $value;
+        }
+        $body = strtr($body, $replacement);
+
         $title = $model->title ?: $this->slugger->slug($subject->getName());
 
         $article

@@ -55,7 +55,31 @@ class ArticleFormType extends AbstractType
                     'placeholder' => 'Родительный падеж',
                 ]
             ])
-            ->add('keyword7', null, [
+            ->add('keyword2', null, [
+                'label' => 'Дательный падеж',
+                'attr' => [
+                    'placeholder' => 'Дательный падеж',
+                ]
+            ])
+            ->add('keyword3', null, [
+                'label' => 'Винительный падеж',
+                'attr' => [
+                    'placeholder' => 'Винительный падеж',
+                ]
+            ])
+            ->add('keyword4', null, [
+                'label' => 'Творительный падеж',
+                'attr' => [
+                    'placeholder' => 'Творительный падеж',
+                ]
+            ])
+            ->add('keyword5', null, [
+                'label' => 'Предложный падеж',
+                'attr' => [
+                    'placeholder' => 'Предложный падеж',
+                ]
+            ])
+            ->add('keyword6', null, [
                 'label' => 'Множественное число',
                 'attr' => [
                     'placeholder' => 'Множественное число',

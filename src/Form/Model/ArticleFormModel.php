@@ -15,7 +15,11 @@ class ArticleFormModel
     public string $title;
     public string $keyword0;
     public string $keyword1;
-    public string $keyword7;
+    public string $keyword2;
+    public string $keyword3;
+    public string $keyword4;
+    public string $keyword5;
+    public string $keyword6;
     public string $sizeFrom;
     public string $sizeTo;
     public array $words;
