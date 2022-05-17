@@ -25,4 +25,15 @@ class ArticleFormModel
     public array $words;
     public array $wordsCount;
     public string $images;
+
+    public function getKeywords() {
+        $keywords = [];
+        foreach ($this as $k => $v) {
+            if(strpos($k, 'keyword') === 0) {
+                $i = (int) substr($k, 7);
+                $keywords[$i] = $v;
+            }
+        }
+        return $keywords;
+    }
 }
