@@ -36,13 +36,10 @@ class ArticleGenerator
             if(rand(0,1)) $body .= '<h3>' .$subject->getTitle() . '</h3>';
             $body .= '<p>' . $p . '</p>';
         }
-        Morpher::getInstance()->set($model->keyword0, $model->getKeywords());
 
-        $tmp_name = 'tmp_template.html.twig';
-        $tmp_file = $_SERVER['DOCUMENT_ROOT'] . '../templates/' . $tmp_name;
-        file_put_contents($tmp_file, $body);
-        $body = $this->env->render($tmp_name, ['keyword' => $model->keyword0]);
-        unlink($tmp_file);
+        Morpher::getInstance()->set($model->keyword0, $model->getKeywords());
+        $template = $this->env->createTemplate($body);
+        $body = $template->render(['keyword' => $model->keyword0]);
 
         $title = $model->title ?: $this->slugger->slug($subject->getName());
 
