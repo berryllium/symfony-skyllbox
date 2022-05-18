@@ -37,10 +37,8 @@ class ArticleGenerator
             $body .= '<p>' . $p . '</p>';
         }
 
-        Morpher::getInstance()->set($model->keyword0, $model->getKeywords());
         $template = $this->env->createTemplate($body);
-        $body = $template->render(['keyword' => $model->keyword0]);
-
+        $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords()]);
         $title = $model->title ?: $this->slugger->slug($subject->getName());
 
         $article

@@ -2,7 +2,6 @@
 
 namespace App\Twig;
 
-use App\Service\Morpher;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -11,7 +10,7 @@ class AppExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new TwigFilter('morph', [$this, 'formatMorph'])
+            new TwigFilter('morph', [$this, 'formatMorph'], ['needs_context' => true])
         ];
     }
 
@@ -19,8 +18,9 @@ class AppExtension extends AbstractExtension
      * @param array $set падежи русского языка (индексы 0 - 5) и множественное число (индекс 6)
      * @return string
      */
-    public function formatMorph(string $word, int $case)
+    public function formatMorph($context, string $word, int $case)
     {
-        return Morpher::getInstance()->get($word, $case);
+        $keywords = $context['keywords'];
+        return $keywords[$case] ?? $word;
     }
 }
