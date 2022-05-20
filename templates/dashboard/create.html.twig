@@ -63,7 +63,7 @@
                     <div class="card-body">
                         <p class="card-title">Продвигаемые слова</p>
                         {% for key, value in form.words.children %}
-                        <div class="row">
+                        <div class="row" data-id="{{ key }}">
                             <div class="col">
                                 <div class="form-label-group">
                                     {{ form_widget(form.words.children[key]) }}
@@ -78,7 +78,9 @@
                             </div>
                         </div>
                         {% endfor %}
-                        ...
+                        <button type="button" id="add_word_row" class="btn btn-lg btn-primary btn-block text-uppercase btn">
+                            Добавить слово
+                        </button>
                     </div>
                 </div>
                 {{ form_row(form.images) }}
@@ -98,5 +100,8 @@
             </div>
         </div>
     {% endif %}
-
+{% endblock %}
+{% block footer_scripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/create_article.js') }}"></script>
 {% endblock %}

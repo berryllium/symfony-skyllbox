@@ -37,6 +37,28 @@ class ArticleGenerator
             $body .= '<p>' . $p . '</p>';
         }
 
+        if($model->words) {
+            $words = [];
+            $body = preg_replace('#\{\{\s#','{{', $body);
+            $body = preg_replace('#\s\}\}#','}}', $body);
+            foreach ($model->words as $k => $word) {
+                for ($i = 0; $i < $model->wordsCount[$k]; $i++) {
+                    $words[] = $word;
+                }
+            }
+            shuffle($words);
+            $textArr = explode(' ', $body);
+            $keys = array_rand($textArr, count($words));
+            foreach ($keys as $i => $key) {
+                array_splice($textArr, $key + 1, 0, $words[$i]);
+                unset($words[$i]);
+                if(count($words) <= 0) {
+                    break;
+                }
+            }
+            $body = implode(' ', $textArr);
+        }
+
         $template = $this->env->createTemplate($body);
         $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords()]);
         $title = $model->title ?: $this->slugger->slug($subject->getName());
