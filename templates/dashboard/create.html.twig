@@ -20,12 +20,25 @@
                             {{ form_widget(form.keyword1) }}
                             {{ form_label(form.keyword1) }}
                         </div>
-
-                        ...
-
                         <div class="form-label-group">
-                            {{ form_widget(form.keyword7) }}
-                            {{ form_label(form.keyword7) }}
+                            {{ form_widget(form.keyword2) }}
+                            {{ form_label(form.keyword2) }}
+                        </div>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword3) }}
+                            {{ form_label(form.keyword3) }}
+                        </div>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword4) }}
+                            {{ form_label(form.keyword4) }}
+                        </div>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword5) }}
+                            {{ form_label(form.keyword5) }}
+                        </div>
+                        <div class="form-label-group">
+                            {{ form_widget(form.keyword6) }}
+                            {{ form_label(form.keyword6) }}
                         </div>
                     </div>
                 </div>
@@ -50,7 +63,7 @@
                     <div class="card-body">
                         <p class="card-title">Продвигаемые слова</p>
                         {% for key, value in form.words.children %}
-                        <div class="row">
+                        <div class="row" data-id="{{ key }}">
                             <div class="col">
                                 <div class="form-label-group">
                                     {{ form_widget(form.words.children[key]) }}
@@ -65,7 +78,9 @@
                             </div>
                         </div>
                         {% endfor %}
-                        ...
+                        <button type="button" id="add_word_row" class="btn btn-lg btn-primary btn-block text-uppercase btn">
+                            Добавить слово
+                        </button>
                     </div>
                 </div>
                 {{ form_row(form.images) }}
@@ -85,5 +100,8 @@
             </div>
         </div>
     {% endif %}
-
+{% endblock %}
+{% block footer_scripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/create_article.js') }}"></script>
 {% endblock %}

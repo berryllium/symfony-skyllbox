@@ -64,9 +64,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $tariff;
 
-    /**
-     * @ORM\OneToMany(targetEntity=ApiToken::class, mappedBy="user")
-     */
     private $token;
 
     /**
