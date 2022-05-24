@@ -71,10 +71,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $apiToken;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Module::class, mappedBy="user")
+     */
+    private $modules;
+
     public function __construct()
     {
         $this->articles = new ArrayCollection();
         $this->token = new ArrayCollection();
+        $this->modules = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -277,6 +283,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Module>
+     */
+    public function getModules(): Collection
+    {
+        return $this->modules;
+    }
+
+    public function addModule(Module $module): self
+    {
+        if (!$this->modules->contains($module)) {
+            $this->modules[] = $module;
+            $module->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeModule(Module $module): self
+    {
+        if ($this->modules->removeElement($module)) {
+            // set the owning side to null (unless already changed)
+            if ($module->getUser() === $this) {
+                $module->setUser(null);
+            }
+        }
 
         return $this;
     }

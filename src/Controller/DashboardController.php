@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Module;
 use App\Entity\User;
 use App\Form\ArticleFormType;
+use App\Form\ModuleFormType;
 use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
+use App\Repository\ModuleRepository;
 use App\Service\ArticleGenerator;
 use App\Service\Subscribe;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
-use Twig\Environment;
 
 /**
  * @IsGranted("IS_AUTHENTICATED")
@@ -62,12 +64,10 @@ class DashboardController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $pageSize = 5;
-
         $pagination = $paginator->paginate(
             $repository->getUserArticles($user->getId()),
             $request->get('page', 1),
-            $pageSize
+            5
         );
 
         return $this->render('dashboard/history.html.twig', [
@@ -121,11 +121,44 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/modules", name="app_dashboard_modules")
      */
-    public function modules(): Response
+    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(ModuleFormType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Module $module */
+            $module = $form->getData();
+            $module->setUser($user);
+            $em->persist($module);
+            $em->flush();
+            $this->addFlash('success', 'Модуль успешно добавлен');
+            return $this->redirect($request->getUri());
+        }
+        $pagination = $paginator->paginate(
+            $user->getModules(),
+            $request->get('page') ?: 1,
+            10
+        );
         return $this->render('dashboard/modules.html.twig', [
-            'controller_name' => 'DashboardController',
+            'pagination' => $pagination,
+            'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/dashboard/modules/delete/{id}", name="app_dashboard_modules_delete")
+     */
+    public function deleteModule($id, EntityManagerInterface $em, ModuleRepository $moduleRepository): Response
+    {
+        $module = $moduleRepository->find($id);
+        if($module && $module->getUser()->getId() === $this->getUser()->getId()) {
+            $em->remove($module);
+            $em->flush();
+        }
+        return $this->redirectToRoute('app_dashboard_modules');
     }
 
     /**
