@@ -123,6 +123,7 @@ class ArticleFormType extends AbstractType
             ->add('images', FileType::class, [
                 'label' => 'Изображения',
                 'required' => false,
+                'multiple' => true,
                 'attr' => [
                     'placeholder' => 'Выберите изображения',
                     'multiple' => true,

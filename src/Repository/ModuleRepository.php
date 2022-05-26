@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Module;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -43,5 +44,15 @@ class ModuleRepository extends ServiceEntityRepository
         if ($flush) {
             $this->_em->flush();
         }
+    }
+
+    public function getUserModules(User $user) {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.user = :val')
+            ->orWhere('m.user = 0')
+            ->setParameter('val', $user)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 }

@@ -3,8 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Article;
+use App\Entity\Module;
 use App\Entity\User;
 use App\Form\Model\ArticleFormModel;
+use App\Repository\ModuleRepository;
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
@@ -17,30 +19,62 @@ class ArticleGenerator
     private SluggerInterface $slugger;
     private EntityManagerInterface $em;
     private Environment $env;
+    private ModuleRepository $moduleRepository;
 
-    public function __construct(ArticleSubjectProvider $subjectProvider, SluggerInterface $slugger, EntityManagerInterface $em, Environment $env)
+
+    public function __construct(
+        ArticleSubjectProvider $subjectProvider,
+        SluggerInterface $slugger,
+        EntityManagerInterface $em,
+        Environment $env,
+        ModuleRepository $moduleRepository
+        )
     {
         $this->subjectProvider = $subjectProvider;
         $this->slugger = $slugger;
         $this->em = $em;
         $this->env = $env;
+        $this->moduleRepository = $moduleRepository;
     }
 
     public function generate(ArticleFormModel $model, User $user) : Article {
         $article = new Article();
         $subject = $this->subjectProvider->getSubject($model->subject);
-
+        $size = rand($model->sizeFrom, $model->sizeTo);
+        $modulesRep = $this->moduleRepository->getUserModules($user);
         $body = '';
-        $paragraphs = $subject->getParagraphs(rand($model->sizeFrom, $model->sizeTo));
-        foreach ($paragraphs as $p) {
-            if(rand(0,1)) $body .= '<h3>' .$subject->getTitle() . '</h3>';
-            $body .= '<p>' . $p . '</p>';
+
+        for ($i = 0; $i < $size; $i++) {
+            /** @var Module[] $modulesRep */
+            $key = array_rand($modulesRep);
+            $body .= $modulesRep[$key]->getContent();
         }
 
+        $this->clearPlaceholders($body);
+        // вставляем заголовок модуля
+        $body = str_replace('{{title}}', $subject->getTitles(1)[0], $body);
+
+        // вставляем пути к картинкам
+        dd($model->images);
+        $body = str_replace('{{imageSrc}}', $model->images, $body);
+
+        // вставляем параграфы
+        while (($pos = strpos($body, '{{paragraph}}')) !== false) {
+            $paragraphs = $subject->getParagraphs(1);
+            $body = substr($body, 0, $pos) . $paragraphs[0] . substr($body, $pos + 13);
+        }
+        while (($pos = strpos($body, '{{paragraphs}}')) !== false) {
+            $paragraphs = $subject->getParagraphs(rand(1, 3));
+            $replace = '';
+            foreach ($paragraphs as $paragraph) {
+                $replace .= "<p>$paragraph</p>";
+            }
+            $body = substr($body, 0, $pos) . $replace . substr($body, $pos + 14);
+        }
+
+        // вставляем продвигаемые слова
         if($model->words) {
             $words = [];
-            $body = preg_replace('#\{\{\s#','{{', $body);
-            $body = preg_replace('#\s\}\}#','}}', $body);
             foreach ($model->words as $k => $word) {
                 for ($i = 0; $i < $model->wordsCount[$k]; $i++) {
                     $words[] = $word;
@@ -59,8 +93,9 @@ class ArticleGenerator
             $body = implode(' ', $textArr);
         }
 
+        // обработку ключевых слов и остальных плейсхолдеров осуществляет twig
         $template = $this->env->createTemplate($body);
-        $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords()]);
+        $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords(), 'subject' => $model->subject]);
         $title = $model->title ?: $this->slugger->slug($subject->getName());
 
         $article
@@ -72,5 +107,10 @@ class ArticleGenerator
         $this->em->persist($article);
         $this->em->flush();
         return $article;
+    }
+
+    private function clearPlaceholders(&$body) {
+        $body = preg_replace('#\{\{\s#', '{{', $body);
+        $body = preg_replace('#\s\}\}#', '}}', $body);
     }
 }

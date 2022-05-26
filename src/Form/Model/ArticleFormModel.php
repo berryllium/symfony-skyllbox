@@ -2,6 +2,7 @@
 
 namespace App\Form\Model;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ArticleFormModel
@@ -24,7 +25,10 @@ class ArticleFormModel
     public string $sizeTo;
     public array $words;
     public array $wordsCount;
-    public string $images;
+    /**
+     * @var UploadedFile[] $images
+     */
+    public array $images;
 
     public function getKeywords() {
         $keywords = [];
