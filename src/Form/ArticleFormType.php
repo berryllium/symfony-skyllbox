@@ -106,7 +106,7 @@ class ArticleFormType extends AbstractType
                 ],
                 'prototype' => true,
                 'allow_add' => true,
-                'data' => [1 => '', 2 => ''],
+                'data' => [1 => ''],
             ])
             ->add('wordsCount', CollectionType::class, [
                 'entry_type' => TextType::class,
@@ -118,11 +118,12 @@ class ArticleFormType extends AbstractType
                 'prototype' => true,
                 'prototype_data' => 'New Tag Placeholder',
                 'allow_add' => true,
-                'data' => [1 => '', 2 => ''],
+                'data' => [1 => ''],
             ])
             ->add('images', FileType::class, [
                 'label' => 'Изображения',
                 'required' => false,
+                'multiple' => true,
                 'attr' => [
                     'placeholder' => 'Выберите изображения',
                     'multiple' => true,

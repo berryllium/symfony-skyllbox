@@ -2,15 +2,24 @@
 
 namespace App\Twig;
 
+use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
 class AppExtension extends AbstractExtension
 {
+    private ArticleSubjectProvider $subjectProvider;
+
+    public function __construct(ArticleSubjectProvider $subjectProvider) {
+
+        $this->subjectProvider = $subjectProvider;
+    }
     public function getFilters()
     {
         return [
-            new TwigFilter('morph', [$this, 'formatMorph'], ['needs_context' => true])
+            new TwigFilter('morph', [$this, 'formatMorph'], ['needs_context' => true]),
+            new TwigFilter('paragraph', [$this, 'paragraph'], ['needs_context' => true]),
+            new TwigFilter('paragraphs', [$this, 'paragraphs'], ['needs_context' => true]),
         ];
     }
 
