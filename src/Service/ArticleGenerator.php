@@ -10,6 +10,7 @@ use App\Repository\ModuleRepository;
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Twig\Environment;
 
@@ -20,6 +21,7 @@ class ArticleGenerator
     private EntityManagerInterface $em;
     private Environment $env;
     private ModuleRepository $moduleRepository;
+    private FileUploader $fileUploader;
 
 
     public function __construct(
@@ -27,7 +29,8 @@ class ArticleGenerator
         SluggerInterface $slugger,
         EntityManagerInterface $em,
         Environment $env,
-        ModuleRepository $moduleRepository
+        ModuleRepository $moduleRepository,
+        FileUploader $fileUploader
         )
     {
         $this->subjectProvider = $subjectProvider;
@@ -35,6 +38,7 @@ class ArticleGenerator
         $this->em = $em;
         $this->env = $env;
         $this->moduleRepository = $moduleRepository;
+        $this->fileUploader = $fileUploader;
     }
 
     public function generate(ArticleFormModel $model, User $user) : Article {
@@ -52,11 +56,7 @@ class ArticleGenerator
 
         $this->clearPlaceholders($body);
         // вставляем заголовок модуля
-        $body = str_replace('{{title}}', $subject->getTitles(1)[0], $body);
-
-        // вставляем пути к картинкам
-        dd($model->images);
-        $body = str_replace('{{imageSrc}}', $model->images, $body);
+        $body = trim(str_replace('{{title}}', $subject->getTitles(1)[0], $body));
 
         // вставляем параграфы
         while (($pos = strpos($body, '{{paragraph}}')) !== false) {
@@ -70,6 +70,32 @@ class ArticleGenerator
                 $replace .= "<p>$paragraph</p>";
             }
             $body = substr($body, 0, $pos) . $replace . substr($body, $pos + 14);
+        }
+
+        // вставляем пути к картинкам
+        $images = [];
+        foreach ($model->images as $file) {
+            /** @var UploadedFile $file */
+            $images[] = $this->fileUploader->uploadFile($file, $file->getBasename());
+        }
+        shuffle($images);
+        preg_match_all('#imageSrc#', $body, $matches);
+        $countImg = count($matches[0]);
+        if($countImg && $images) {
+            while (count($images) < $countImg) {
+                $images[] = $images[array_rand($images)];
+            }
+            while (($pos = strpos($body, '{{imageSrc}}')) !== false) {
+                if($pos < 3) {
+                    die($body);
+                } else {
+                    $body = substr($body, 0, $pos) . '/uploads/' . $images[$countImg - 1] . substr($body, $pos + 12);
+                    $countImg--;
+                }
+
+            }
+        } else {
+            $body = str_replace('{{imageSrc}}', 'https://imgholder.ru/525x300/8493a8/adb9ca&text=IMAGE+HOLDER&font=kelson', $body);
         }
 
         // вставляем продвигаемые слова
@@ -95,7 +121,7 @@ class ArticleGenerator
 
         // обработку ключевых слов и остальных плейсхолдеров осуществляет twig
         $template = $this->env->createTemplate($body);
-        $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords(), 'subject' => $model->subject]);
+        $body = $template->render(['keyword' => $model->keyword0, 'keywords' => $model->getKeywords()]);
         $title = $model->title ?: $this->slugger->slug($subject->getName());
 
         $article

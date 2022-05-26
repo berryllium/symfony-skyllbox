@@ -12,10 +12,10 @@ class FileUploader
     private SluggerInterface $slugger;
     private FilesystemOperator $filesystem;
 
-    public function __construct(SluggerInterface $slugger, FilesystemOperator $articleFileSystem ) {
+    public function __construct(SluggerInterface $slugger, FilesystemOperator $defaultFilesystem ) {
 
         $this->slugger = $slugger;
-        $this->filesystem = $articleFileSystem;
+        $this->filesystem = $defaultFilesystem;
     }
 
     public function uploadFile(File $file, ?string $oldFileName = null) : string {

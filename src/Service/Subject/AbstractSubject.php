@@ -37,11 +37,6 @@ class AbstractSubject implements ArticleSubjectInterface
         return $this->getItems('paragraphs', $count);
     }
 
-    public function getImages(int $count): array
-    {
-        return $this->getItems('images', $count);
-    }
-
     public function getName(): string
     {
         return $this->name;
