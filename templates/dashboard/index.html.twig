@@ -1,2 +1,52 @@
 {% extends 'dashboard/base.html.twig' %}
 {% block title %}Рабочий стол{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-8 border-right">
+            {% if diff %}
+                <div class="alert alert-warning" role="alert">
+                    Подписка истекает через {{ diff }}
+                </div>
+            {% endif %}
+
+            <div class="card-columns dashboard">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ count_articles }}</h5>
+                        <p class="card-text">Всего статей создано.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ count_articles_month }}</h5>
+                        <p class="card-text">Создано в этом месяце.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ app.user.tariff|upper }}</h5>
+                        <p class="card-text">Ваш уровень подписки.</p>
+                        {% if app.user.tariff != 'pro' %}
+                            <a href="#" class="btn btn-primary">Улучшить</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Создать статью</h5>
+                        <a href="{{ path('app_dashboard_create') }}" class="btn btn-primary">Создать</a>
+                    </div>
+                </div>
+                {% if last_article is not null %}
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ last_article.title }}</h5>
+                        <p class="card-text">{{ last_article.body|slice(0, 150) }}...</p>
+                        <a href="{{ path('app_dashboard_article', {slug: last_article.slug}) }}" class="btn btn-primary">Подробнее</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
