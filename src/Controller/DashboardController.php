@@ -37,12 +37,7 @@ class DashboardController extends AbstractController
         $date = new \DateTime();
         $diff = false;
         if($date < $user->getSubscribeTo()) {
-            $days = $date->diff($user->getSubscribeTo())->days;
-            if($days == 1) {
-                $diff = '1 день';
-            } elseif($days == 2 || $days == 3) {
-                $diff = "$days дня";
-            }
+            $diff = $date->diff($user->getSubscribeTo())->days;
         }
         return $this->render('dashboard/index.html.twig', [
             'diff' => $diff,

@@ -5,7 +5,7 @@
         <div class="col-xl-8 border-right">
             {% if diff %}
                 <div class="alert alert-warning" role="alert">
-                    Подписка истекает через {{ diff }}
+                    Подписка истекает через {{ diff }} {{ diff == 1 ? 'день' : 'дня'}}
                 </div>
             {% endif %}
 
