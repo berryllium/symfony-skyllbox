@@ -52,6 +52,48 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+     * Последняя статья
+     */
+    public function getLastUserArticles($user_id){
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.author = :user')
+            ->setParameter('user', $user_id)
+            ->setMaxResults(1)
+            ->orderBy('a.id', 'desc')
+            ->getQuery()
+            ->getSingleResult()
+            ;
+    }
+
+    /**
+     * Сколько статей создано пользователем
+     */
+    public function getCountUserArticles($user_id){
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.author)')
+            ->andWhere('a.author = :user_id')
+            ->setParameter('user_id', $user_id)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
+    /**
+     * Сколько статей создано пользователем начиная с даты
+     */
+    public function getCountUserArticlesFromDate(int $user_id, \DateTime $date){
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.author)')
+            ->andWhere('a.author = :user_id')
+            ->andWhere('a.createdAt > :date')
+            ->setParameter('user_id', $user_id)
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getSingleScalarResult()
+            ;
+    }
+
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */

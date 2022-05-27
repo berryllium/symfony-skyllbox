@@ -30,10 +30,22 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard", name="app_dashboard")
      */
-    public function index(Security $security): Response
+    public function index(Security $security, ArticleRepository $articleRepository): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $date = new \DateTime();
+        $diff = false;
+        if($date < $user->getSubscribeTo()) {
+            $diff = $date->diff($user->getSubscribeTo())->days;
+        }
         return $this->render('dashboard/index.html.twig', [
-            'controller_name' => 'DashboardController',
+            'diff' => $diff,
+            'count_articles' => $articleRepository->getCountUserArticles($user->getId()),
+            'count_articles_month' => $articleRepository->getCountUserArticlesFromDate(
+                $user->getId(), \DateTime::createFromFormat('d.m.Y H:i:s', date('01.m.Y 00:00:00'))
+            ),
+            'last_article' => $articleRepository->getLastUserArticles($user->getId()),
         ]);
     }
 
