@@ -11,7 +11,6 @@ use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
 use App\Repository\ModuleRepository;
 use App\Service\ArticleGenerator;
-use App\Service\Subscribe;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -52,20 +51,34 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/create", name="app_dashboard_create")
      */
-    public function create(Request $request, ArticleGenerator $generator): Response
+    public function create(Request $request, ArticleGenerator $generator, ArticleRepository $articleRepository): Response
     {
-        $form = $this->createForm(ArticleFormType::class);
-        $form->handleRequest($request);
-        $user = $this->getUser();
-
         /** @var User $user */
-        if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->getUser();
+        $limitError = false;
+
+        if($user->getTariff() != 'pro') {
+            $articlesPerHour = $articleRepository->getCountUserArticlesFromDate(
+                $user->getId(),
+                (new \DateTime())->modify('-1 hour')
+            );
+            $limitError = $articlesPerHour >= 2;
+        }
+
+        $form = $this->createForm(ArticleFormType::class, null, [
+            'disabled' => $limitError,
+            'tariff' => $user->getTariff()
+        ]);
+
+        $form->handleRequest($request);
+        if (!$limitError && $form->isSubmitted() && $form->isValid()) {
             $article = $generator->generate($form->getData(), $user);
         }
 
         return $this->render('dashboard/create.html.twig', [
             'form' => $form->createView(),
-            'article' => $article ?? null
+            'article' => $article ?? null,
+            'limitError' => $limitError
         ]);
     }
 
@@ -90,7 +103,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/subscribe", name="app_dashboard_subscribe")
      */
-    public function subscribe(Subscribe $subscribe): Response
+    public function subscribe(): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -137,6 +150,10 @@ class DashboardController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if($user->getTariff() !== 'pro') {
+            return $this->redirectToRoute('app_dashboard');
+        }
 
         $form = $this->createForm(ModuleFormType::class);
         $form->handleRequest($request);

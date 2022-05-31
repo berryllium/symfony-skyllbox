@@ -5,7 +5,7 @@
 
         <div class="col-xl-8">
             {% if(tariff is not null) %}
-                {% if date() >  app.user.subscribeTo %}
+                {% if date() < app.user.subscribeTo %}
                     <div class="alert alert-success" role="alert">Подписка {{ tariff|upper }} оформлена, до {{ app.user.subscribeTo|date('d.m.Y') }}</div>
                 {% else %}
                     <div class="alert alert-danger" role="alert">Подписка на тариф {{ tariff|upper }} закончилась</div>

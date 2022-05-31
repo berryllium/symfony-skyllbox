@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Service\Mailer;
 use App\Service\Subscribe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +13,7 @@ class SubscribeController extends AbstractController
     /**
      * @Route("/subscribe/{tariff}", name="app_subscribe")
      */
-    public function index($tariff, Subscribe $subscribe, Mailer $mailer): Response
+    public function index($tariff, Subscribe $subscribe): Response
     {
         /** @var User $user */
         $user = $this->getUser();

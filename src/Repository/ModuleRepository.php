@@ -47,10 +47,12 @@ class ModuleRepository extends ServiceEntityRepository
     }
 
     public function getUserModules(User $user) {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.user = :val')
-            ->orWhere('m.user = 0')
-            ->setParameter('val', $user)
+        $result = $this->createQueryBuilder('m')
+            ->andWhere('m.user = 0');
+        if($user->getTariff() == 'pro') {
+            $result->orWhere('m.user = :val');
+        }
+        return $result->setParameter('val', $user)
             ->getQuery()
             ->getResult()
             ;

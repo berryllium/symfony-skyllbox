@@ -1,6 +1,15 @@
 {% extends 'dashboard/base.html.twig' %}
 {% block title %}Создание статей{% endblock %}
 {% block content %}
+    {% if limitError %}
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="alert alert-danger" role="alert">
+                Превышен лимит создания статей, чтобы снять лимит <a href="{{ path('app_dashboard_subscribe') }}">Улучшите подписку</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     <div class="row">
         <div class="col-xl-6">
             {{ form_start(form) }}
@@ -16,30 +25,32 @@
                             {{ form_widget(form.keyword0) }}
                             {{ form_label(form.keyword0) }}
                         </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword1) }}
-                            {{ form_label(form.keyword1) }}
-                        </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword2) }}
-                            {{ form_label(form.keyword2) }}
-                        </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword3) }}
-                            {{ form_label(form.keyword3) }}
-                        </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword4) }}
-                            {{ form_label(form.keyword4) }}
-                        </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword5) }}
-                            {{ form_label(form.keyword5) }}
-                        </div>
-                        <div class="form-label-group">
-                            {{ form_widget(form.keyword6) }}
-                            {{ form_label(form.keyword6) }}
-                        </div>
+                        {% if form.children.keyword1 is defined %}
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword1) }}
+                                {{ form_label(form.keyword1) }}
+                            </div>
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword2) }}
+                                {{ form_label(form.keyword2) }}
+                            </div>
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword3) }}
+                                {{ form_label(form.keyword3) }}
+                            </div>
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword4) }}
+                                {{ form_label(form.keyword4) }}
+                            </div>
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword5) }}
+                                {{ form_label(form.keyword5) }}
+                            </div>
+                            <div class="form-label-group">
+                                {{ form_widget(form.keyword6) }}
+                                {{ form_label(form.keyword6) }}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -63,24 +74,26 @@
                     <div class="card-body">
                         <p class="card-title">Продвигаемые слова</p>
                         {% for key, value in form.words.children %}
-                        <div class="row" data-id="{{ key }}">
-                            <div class="col">
-                                <div class="form-label-group">
-                                    {{ form_widget(form.words.children[key]) }}
-                                    {{ form_label(form.words.children[key]) }}
+                            <div class="row" data-id="{{ key }}">
+                                <div class="col">
+                                    <div class="form-label-group">
+                                        {{ form_widget(form.words.children[key]) }}
+                                        {{ form_label(form.words.children[key]) }}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-label-group">
+                                        {{ form_widget(form.wordsCount.children[key]) }}
+                                        {{ form_label(form.wordsCount.children[key]) }}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="form-label-group">
-                                    {{ form_widget(form.wordsCount.children[key]) }}
-                                    {{ form_label(form.wordsCount.children[key]) }}
-                                </div>
-                            </div>
-                        </div>
                         {% endfor %}
-                        <button type="button" id="add_word_row" class="btn btn-lg btn-primary btn-block text-uppercase btn">
-                            Добавить слово
-                        </button>
+                        {% if app.user.tariff == 'plus' or app.user.tariff == 'pro' %}
+                            <button type="button" id="add_word_row" class="btn btn-lg btn-primary btn-block text-uppercase btn">
+                                Добавить слово
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
                 {{ form_row(form.images) }}
