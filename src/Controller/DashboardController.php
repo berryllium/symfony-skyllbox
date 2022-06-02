@@ -11,6 +11,7 @@ use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
 use App\Repository\ModuleRepository;
 use App\Service\ArticleGenerator;
+use App\Service\Rights;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -19,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * @IsGranted("IS_AUTHENTICATED")
@@ -29,7 +29,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard", name="app_dashboard")
      */
-    public function index(Security $security, ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -39,7 +39,7 @@ class DashboardController extends AbstractController
             $diff = $date->diff($user->getSubscribeTo())->days;
         }
         return $this->render('dashboard/index.html.twig', [
-            'diff' => $diff,
+            'diff' => $diff < 3 ? $diff : false,
             'count_articles' => $articleRepository->getCountUserArticles($user->getId()),
             'count_articles_month' => $articleRepository->getCountUserArticlesFromDate(
                 $user->getId(), \DateTime::createFromFormat('d.m.Y H:i:s', date('01.m.Y 00:00:00'))
@@ -51,25 +51,13 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/create", name="app_dashboard_create")
      */
-    public function create(Request $request, ArticleGenerator $generator, ArticleRepository $articleRepository): Response
+    public function create(Request $request, ArticleGenerator $generator, Rights $rights): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $limitError = false;
+        $limitError = !$rights->canCreateArticle();
 
-        if($user->getTariff() != 'pro') {
-            $articlesPerHour = $articleRepository->getCountUserArticlesFromDate(
-                $user->getId(),
-                (new \DateTime())->modify('-1 hour')
-            );
-            $limitError = $articlesPerHour >= 2;
-        }
-
-        $form = $this->createForm(ArticleFormType::class, null, [
-            'disabled' => $limitError,
-            'tariff' => $user->getTariff()
-        ]);
-
+        $form = $this->createForm(ArticleFormType::class, null, ['disabled' => $limitError]);
         $form->handleRequest($request);
         if (!$limitError && $form->isSubmitted() && $form->isValid()) {
             $article = $generator->generate($form->getData(), $user);
@@ -146,12 +134,12 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/modules", name="app_dashboard_modules")
      */
-    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
+    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em, Rights $rights): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if($user->getTariff() !== 'pro') {
+        if(!$rights->canUseSelfModule()) {
             return $this->redirectToRoute('app_dashboard');
         }
 

@@ -22,6 +22,7 @@ class ArticleGenerator
     private Environment $env;
     private ModuleRepository $moduleRepository;
     private FileUploader $fileUploader;
+    private Rights $rights;
 
 
     public function __construct(
@@ -30,7 +31,8 @@ class ArticleGenerator
         EntityManagerInterface $em,
         Environment $env,
         ModuleRepository $moduleRepository,
-        FileUploader $fileUploader
+        FileUploader $fileUploader,
+        Rights $rights
         )
     {
         $this->subjectProvider = $subjectProvider;
@@ -39,13 +41,19 @@ class ArticleGenerator
         $this->env = $env;
         $this->moduleRepository = $moduleRepository;
         $this->fileUploader = $fileUploader;
+        $this->rights = $rights;
     }
 
     public function generate(ArticleFormModel $model, User $user) : Article {
         $article = new Article();
         $subject = $this->subjectProvider->getSubject($model->subject);
         $size = rand($model->sizeFrom, $model->sizeTo);
-        $modulesRep = $this->moduleRepository->getUserModules($user);
+        if($this->rights->canUseSelfModule()) {
+            $modulesRep = $this->moduleRepository->getModules($user->getId());
+        } else {
+            $modulesRep = $this->moduleRepository->getModules();
+        }
+
         $body = '';
 
         for ($i = 0; $i < $size; $i++) {

@@ -89,7 +89,7 @@
                                 </div>
                             </div>
                         {% endfor %}
-                        {% if app.user.tariff == 'plus' or app.user.tariff == 'pro' %}
+                        {% if rights.canAddWords %}
                             <button type="button" id="add_word_row" class="btn btn-lg btn-primary btn-block text-uppercase btn">
                                 Добавить слово
                             </button>

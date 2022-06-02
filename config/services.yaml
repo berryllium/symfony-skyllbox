@@ -32,3 +32,11 @@ services:
 
     App\Service\Subject\PhpSubject:
         tags: [ 'diplom.subject' ]
+
+    App\Service\Rights:
+        arguments:
+            - '%env(ARTICLE_LIMIT_COUNT)%'
+            - '%env(ARTICLE_LIMIT_PERIOD)%'
+    app.rigths:
+        alias: App\Service\Rights
+        public: true

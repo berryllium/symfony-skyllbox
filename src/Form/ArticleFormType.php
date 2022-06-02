@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Form\Model\ArticleFormModel;
+use App\Service\Rights;
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,9 +18,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleFormType extends AbstractType
 {
     private ArticleSubjectProvider $subjectProvider;
+    private Rights $rights;
 
-    public function __construct(ArticleSubjectProvider $subjectProvider) {
+    public function __construct(ArticleSubjectProvider $subjectProvider, Rights $rights) {
         $this->subjectProvider = $subjectProvider;
+        $this->rights = $rights;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -47,7 +50,7 @@ class ArticleFormType extends AbstractType
                     'placeholder' => 'Ключевое слово',
                 ]
             ]);
-        if($options['tariff'] == 'plus' || $options['tariff'] == 'pro') {
+        if($this->rights->canAddWordForm()) {
             $builder
                 ->add('keyword1', null, [
                     'label' => 'Родительный падеж',
@@ -145,8 +148,7 @@ class ArticleFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => ArticleFormModel::class,
-            'tariff' => null
+            'data_class' => ArticleFormModel::class
         ]);
     }
 }
