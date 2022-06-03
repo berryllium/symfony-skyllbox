@@ -32,3 +32,11 @@ services:
 
     App\Service\Subject\PhpSubject:
         tags: [ 'diplom.subject' ]
+
+    App\Service\SubscriptionLevelRights:
+        arguments:
+            - 2 # лимит статей
+            - 1 # период в часах
+    app.subscription_level_rights:
+        alias: App\Service\SubscriptionLevelRights
+        public: true

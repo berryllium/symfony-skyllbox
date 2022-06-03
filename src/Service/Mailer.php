@@ -3,6 +3,7 @@
 namespace App\Service;
 
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface as MailerComponent;
 use Symfony\Component\Mime\Address;
@@ -11,10 +12,12 @@ class Mailer
 {
     private $from;
     private MailerComponent $mailer;
+    private LoggerInterface $logger;
 
-    public function __construct(MailerComponent $mailer) {
+    public function __construct(MailerComponent $mailer, LoggerInterface $logger) {
         $this->from = new Address('noreply@symfony.generator', 'Generator');
         $this->mailer = $mailer;
+        $this->logger = $logger;
     }
     public function send(Address $to, $subj, $template, $context = null) {
         $email =  (new TemplatedEmail())
@@ -26,7 +29,11 @@ class Mailer
         if($context) {
             $email->context($context);
         }
-        $this->mailer->send($email);
+        try{
+            $this->mailer->send($email);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
     }
 
     public function sendNewSubscribe($user) {

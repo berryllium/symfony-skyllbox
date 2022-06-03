@@ -3,6 +3,8 @@ twig:
     form_themes: ['bootstrap_4_layout.html.twig']
     paths:
         'assets/css': css
+    globals:
+        subscription_level_rights: "@app.subscription_level_rights"
 
 
 when@test:

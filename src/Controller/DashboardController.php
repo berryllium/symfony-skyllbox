@@ -11,7 +11,7 @@ use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
 use App\Repository\ModuleRepository;
 use App\Service\ArticleGenerator;
-use App\Service\Subscribe;
+use App\Service\SubscriptionLevelRights;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
 
 /**
  * @IsGranted("IS_AUTHENTICATED")
@@ -30,7 +29,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard", name="app_dashboard")
      */
-    public function index(Security $security, ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -40,7 +39,7 @@ class DashboardController extends AbstractController
             $diff = $date->diff($user->getSubscribeTo())->days;
         }
         return $this->render('dashboard/index.html.twig', [
-            'diff' => $diff,
+            'diff' => $diff < 3 ? $diff : false,
             'count_articles' => $articleRepository->getCountUserArticles($user->getId()),
             'count_articles_month' => $articleRepository->getCountUserArticlesFromDate(
                 $user->getId(), \DateTime::createFromFormat('d.m.Y H:i:s', date('01.m.Y 00:00:00'))
@@ -52,20 +51,22 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/create", name="app_dashboard_create")
      */
-    public function create(Request $request, ArticleGenerator $generator): Response
+    public function create(Request $request, ArticleGenerator $generator, SubscriptionLevelRights $rights): Response
     {
-        $form = $this->createForm(ArticleFormType::class);
-        $form->handleRequest($request);
-        $user = $this->getUser();
-
         /** @var User $user */
-        if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->getUser();
+        $limitError = !$rights->canCreateArticle();
+
+        $form = $this->createForm(ArticleFormType::class, null, ['disabled' => $limitError]);
+        $form->handleRequest($request);
+        if (!$limitError && $form->isSubmitted() && $form->isValid()) {
             $article = $generator->generate($form->getData(), $user);
         }
 
         return $this->render('dashboard/create.html.twig', [
             'form' => $form->createView(),
-            'article' => $article ?? null
+            'article' => $article ?? null,
+            'limitError' => $limitError
         ]);
     }
 
@@ -90,7 +91,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/subscribe", name="app_dashboard_subscribe")
      */
-    public function subscribe(Subscribe $subscribe): Response
+    public function subscribe(): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -133,10 +134,14 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/modules", name="app_dashboard_modules")
      */
-    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
+    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em, SubscriptionLevelRights $rights): Response
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        if(!$rights->canUseSelfModule()) {
+            return $this->redirectToRoute('app_dashboard');
+        }
 
         $form = $this->createForm(ModuleFormType::class);
         $form->handleRequest($request);

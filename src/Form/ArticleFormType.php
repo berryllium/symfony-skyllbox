@@ -3,9 +3,9 @@
 namespace App\Form;
 
 use App\Form\Model\ArticleFormModel;
+use App\Service\SubscriptionLevelRights;
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -18,14 +18,15 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleFormType extends AbstractType
 {
     private ArticleSubjectProvider $subjectProvider;
+    private SubscriptionLevelRights $rights;
 
-    public function __construct(ArticleSubjectProvider $subjectProvider) {
+    public function __construct(ArticleSubjectProvider $subjectProvider, SubscriptionLevelRights $rights) {
         $this->subjectProvider = $subjectProvider;
+        $this->rights = $rights;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $subjects = $this->subjectProvider->getAllSubjects();
         $subject_choices = [];
         foreach ($subjects as $subject) {
@@ -35,7 +36,7 @@ class ArticleFormType extends AbstractType
         $builder
             ->add('subject', ChoiceType::class, [
                 'label' => 'Тематика',
-                'choices' => $subject_choices
+                'choices' => $subject_choices,
             ])
             ->add('title', null, [
                 'label' => 'Заголовок статьи',
@@ -48,43 +49,49 @@ class ArticleFormType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Ключевое слово',
                 ]
-            ])
-            ->add('keyword1', null, [
-                'label' => 'Родительный падеж',
-                'attr' => [
-                    'placeholder' => 'Родительный падеж',
-                ]
-            ])
-            ->add('keyword2', null, [
-                'label' => 'Дательный падеж',
-                'attr' => [
-                    'placeholder' => 'Дательный падеж',
-                ]
-            ])
-            ->add('keyword3', null, [
-                'label' => 'Винительный падеж',
-                'attr' => [
-                    'placeholder' => 'Винительный падеж',
-                ]
-            ])
-            ->add('keyword4', null, [
-                'label' => 'Творительный падеж',
-                'attr' => [
-                    'placeholder' => 'Творительный падеж',
-                ]
-            ])
-            ->add('keyword5', null, [
-                'label' => 'Предложный падеж',
-                'attr' => [
-                    'placeholder' => 'Предложный падеж',
-                ]
-            ])
-            ->add('keyword6', null, [
-                'label' => 'Множественное число',
-                'attr' => [
-                    'placeholder' => 'Множественное число',
-                ]
-            ])
+            ]);
+        if($this->rights->canAddWordForm()) {
+            $builder
+                ->add('keyword1', null, [
+                    'label' => 'Родительный падеж',
+                    'attr' => [
+                        'placeholder' => 'Родительный падеж',
+                    ]
+                ])
+                ->add('keyword2', null, [
+                    'label' => 'Дательный падеж',
+                    'attr' => [
+                        'placeholder' => 'Дательный падеж',
+                    ]
+                ])
+                ->add('keyword3', null, [
+                    'label' => 'Винительный падеж',
+                    'attr' => [
+                        'placeholder' => 'Винительный падеж',
+                    ]
+                ])
+                ->add('keyword4', null, [
+                    'label' => 'Творительный падеж',
+                    'attr' => [
+                        'placeholder' => 'Творительный падеж',
+                    ]
+                ])
+                ->add('keyword5', null, [
+                    'label' => 'Предложный падеж',
+                    'attr' => [
+                        'placeholder' => 'Предложный падеж',
+                    ]
+                ])
+                ->add('keyword6', null, [
+                    'label' => 'Множественное число',
+                    'attr' => [
+                        'placeholder' => 'Множественное число',
+                    ]
+                ]);
+        }
+
+
+        $builder
             ->add('sizeFrom', NumberType::class, [
                 'label' => 'Размер статьи от',
                 'attr' => [

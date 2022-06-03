@@ -24,10 +24,10 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">{{ app.user.tariff|upper }}</h5>
+                        <h5 class="card-title">{{ app.user.tariff ? app.user.tariff|upper : 'FREE' }}</h5>
                         <p class="card-text">Ваш уровень подписки.</p>
                         {% if app.user.tariff != 'pro' %}
-                            <a href="#" class="btn btn-primary">Улучшить</a>
+                            <a href="{{ path('app_dashboard_subscribe') }}" class="btn btn-primary">Улучшить</a>
                         {% endif %}
                     </div>
                 </div>
