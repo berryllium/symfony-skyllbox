@@ -22,7 +22,7 @@ class ArticleGenerator
     private Environment $env;
     private ModuleRepository $moduleRepository;
     private FileUploader $fileUploader;
-    private Rights $rights;
+    private SubscriptionLevelRights $rights;
 
 
     public function __construct(
@@ -32,7 +32,7 @@ class ArticleGenerator
         Environment $env,
         ModuleRepository $moduleRepository,
         FileUploader $fileUploader,
-        Rights $rights
+        SubscriptionLevelRights $rights
         )
     {
         $this->subjectProvider = $subjectProvider;

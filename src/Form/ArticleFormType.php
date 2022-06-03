@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Form\Model\ArticleFormModel;
-use App\Service\Rights;
+use App\Service\SubscriptionLevelRights;
 use Diplom\ArticleSubjectProviderBundle\ArticleSubjectProvider;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -18,9 +18,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ArticleFormType extends AbstractType
 {
     private ArticleSubjectProvider $subjectProvider;
-    private Rights $rights;
+    private SubscriptionLevelRights $rights;
 
-    public function __construct(ArticleSubjectProvider $subjectProvider, Rights $rights) {
+    public function __construct(ArticleSubjectProvider $subjectProvider, SubscriptionLevelRights $rights) {
         $this->subjectProvider = $subjectProvider;
         $this->rights = $rights;
     }

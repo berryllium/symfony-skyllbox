@@ -11,7 +11,7 @@
                 <a href="{{ path('app_dashboard_history') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_history' ? 'active' : 'bg-light' }}">История статей</a>
                 <a href="{{ path('app_dashboard_subscribe') }}" class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_subscribe' ? 'active' : 'bg-light' }}">Подписка</a>
                 <a href="{{ path('app_dashboard_profile') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_profile' ? 'active' : 'bg-light' }}">Профиль</a>
-                {% if rights.canUseSelfModule %}
+                {% if subscription_level_rights.canUseSelfModule %}
                     <a href="{{ path('app_dashboard_modules') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_modules' ? 'active' : 'bg-light' }}">Модули генератора</a>
                 {% endif %}
             </div>

@@ -6,25 +6,35 @@ use App\Entity\User;
 use App\Repository\ArticleRepository;
 use Symfony\Component\Security\Core\Security;
 
-class Rights
+class SubscriptionLevelRights
 {
     private ?User $user;
     private ArticleRepository $articleRepository;
     private $articleCount;
     private $articlePeriod;
+    private $tariff;
+    
+    const TARIFF_PRO = 'pro';
+    const TARIFF_PLUS = 'plus';
 
     public function __construct($articleCount, $articlePeriod, Security $security, ArticleRepository $articleRepository){
         $this->user = $security->getUser();
+        if($this->user) {
+            $this->tariff = $this->user->getTariff();
+        } else {
+            $this->tariff = null;
+        }
+
         $this->articleRepository = $articleRepository;
         $this->articleCount = $articleCount;
         $this->articlePeriod = $articlePeriod;
     }
 
     public function canCreateArticle() : bool {
-        if(!$this->user) {
+        if(!$this->tariff) {
             return false;
         }
-        if($this->user->getTariff() == 'pro') {
+        if($this->tariff == self::TARIFF_PRO) {
             return true;
         }
         $articlesPerHour = $this->articleRepository->getCountUserArticlesFromDate(
@@ -35,14 +45,14 @@ class Rights
     }
 
     public function canUseSelfModule() : bool {
-        return $this->user && $this->user->getTariff() == 'pro';
+        return $this->tariff == self::TARIFF_PRO;
     }
 
     public function canAddWords() : bool {
-        return $this->user && ($this->user->getTariff() == 'plus' || $this->user->getTariff() == 'pro');
+        return $this->tariff == self::TARIFF_PLUS || $this->tariff == self::TARIFF_PRO;
     }
 
     public function canAddWordForm() : bool {
-        return $this->user && ($this->user->getTariff() == 'plus' || $this->user->getTariff() == 'pro');
+        return $this->tariff == self::TARIFF_PLUS || $this->tariff == self::TARIFF_PRO;
     }
 }

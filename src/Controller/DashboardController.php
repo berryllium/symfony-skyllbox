@@ -11,7 +11,7 @@ use App\Form\ProfileFormType;
 use App\Repository\ArticleRepository;
 use App\Repository\ModuleRepository;
 use App\Service\ArticleGenerator;
-use App\Service\Rights;
+use App\Service\SubscriptionLevelRights;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,7 +51,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/create", name="app_dashboard_create")
      */
-    public function create(Request $request, ArticleGenerator $generator, Rights $rights): Response
+    public function create(Request $request, ArticleGenerator $generator, SubscriptionLevelRights $rights): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -134,7 +134,7 @@ class DashboardController extends AbstractController
     /**
      * @Route("/dashboard/modules", name="app_dashboard_modules")
      */
-    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em, Rights $rights): Response
+    public function modules(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em, SubscriptionLevelRights $rights): Response
     {
         /** @var User $user */
         $user = $this->getUser();
