@@ -17,9 +17,11 @@ class SubscriptionLevelRights
     const TARIFF_PRO = 'pro';
     const TARIFF_PLUS = 'plus';
 
-    public function __construct($articleCount, $articlePeriod, Security $security, ArticleRepository $articleRepository){
+    public function __construct($articleCount, $articlePeriod, Security $security, ArticleRepository $articleRepository, Subscribe $subscribe){
         $this->user = $security->getUser();
+
         if($this->user) {
+            $subscribe->checkSubscribe($this->user);
             $this->tariff = $this->user->getTariff();
         } else {
             $this->tariff = null;

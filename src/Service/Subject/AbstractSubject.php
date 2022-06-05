@@ -9,6 +9,7 @@ class AbstractSubject implements ArticleSubjectInterface
     protected string $name;
     protected string $code;
     protected array $titles;
+    protected array $descriptions;
     protected array $paragraphs;
 
     protected function getItems($itemName, $count) {
@@ -27,9 +28,19 @@ class AbstractSubject implements ArticleSubjectInterface
         return $this->getItems('titles', $count);
     }
 
+
     public function getTitle() :string {
         $titles = $this->getTitles();
         return array_pop($titles);
+    }
+
+    public function getDescriptions($count = 1) :array {
+        return $this->getItems('descriptions', $count);
+    }
+
+    public function getDescription() :string {
+        $descriptions = $this->getDescriptions();
+        return array_pop($descriptions);
     }
 
     public function getParagraphs(int $count): array

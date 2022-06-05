@@ -49,7 +49,7 @@ class SecurityController extends AbstractController
         }
         $apiToken
             ->setToken($token)
-            ->setExpiriesAt($date);
+            ->setExpiresAt($date);
         $em->persist($apiToken);
         $em->flush();
         return $this->redirectToRoute('app_dashboard_profile');

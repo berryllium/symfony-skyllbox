@@ -25,7 +25,7 @@ class ApiToken
     /**
      * @ORM\Column(type="datetime")
      */
-    private $expiriesAt;
+    private $expiresAt;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="apiToken", cascade={"persist", "remove"})
@@ -50,14 +50,14 @@ class ApiToken
         return $this;
     }
 
-    public function getExpiriesAt(): ?\DateTimeInterface
+    public function getExpiresAt(): ?\DateTimeInterface
     {
-        return $this->expiriesAt;
+        return $this->expiresAt;
     }
 
-    public function setExpiriesAt(\DateTimeInterface $expiriesAt): self
+    public function setExpiresAt(\DateTimeInterface $expiresAt): self
     {
-        $this->expiriesAt = $expiriesAt;
+        $this->expiresAt = $expiresAt;
 
         return $this;
     }
@@ -72,5 +72,10 @@ class ApiToken
         $this->user = $user;
 
         return $this;
+    }
+
+    public function isExpired()
+    {
+        return $this->getExpiresAt() <= new \DateTime();
     }
 }
