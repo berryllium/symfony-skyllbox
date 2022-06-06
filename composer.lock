@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17c642801c4136f57cf35d94b1642317",
+    "content-hash": "07815207c7f9b2c1bbdb349eeef26056",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -60,14 +60,8 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/berryllium/diplom-subject.git",
-                "reference": "dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/berryllium/diplom-subject/zipball/dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8",
-                "reference": "dbaa1728d1a77cfe7aac9463e80ce8d370b2c4f8",
-                "shasum": ""
+                "url": "git@github.com:berryllium/diplom-subject.git",
+                "reference": "93314e3b466cb439e86a1738b818f7974c08a262"
             },
             "require": {
                 "php": ">=7.4"
@@ -91,11 +85,7 @@
                 }
             ],
             "description": "Тематики статей",
-            "support": {
-                "source": "https://github.com/berryllium/diplom-subject/tree/master",
-                "issues": "https://github.com/berryllium/diplom-subject/issues"
-            },
-            "time": "2022-04-09T19:01:45+00:00"
+            "time": "2022-04-09T18:20:20+00:00"
         },
         {
             "name": "doctrine/annotations",
@@ -8196,7 +8186,7 @@
         }
     ],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "berryllium/diplom-subject": 20
     },
