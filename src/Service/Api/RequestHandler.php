@@ -9,28 +9,25 @@ use Symfony\Component\HttpFoundation\Request;
 class RequestHandler
 {
     public function prepareArticleFormModel(Request $request) {
+        $params = $request->toArray();
         $model = new ArticleFormModel();
-        foreach ($request->toArray() as $prop => $value) {
-            if($prop == 'words') {
-                foreach ($value as $k => $word) {
-                    $model->words[$k] = $word['word'];
-                    $model->wordsCount[$k] = $word['count'];
-                }
-            } elseif ($prop == 'keyword') {
-                foreach ($value as $k => $keyword) {
-                    $key = 'keyword' . $k;
-                    $model->$key = $keyword;
-                }
-            } elseif (property_exists($model, $prop)) {
-                $model->$prop = $value;
-            }
+
+        $model->title = $params['title'] ?? '';
+        $model->subject = $params['subject'];
+        $model->sizeFrom = $params['sizeFrom'] ?? 1;
+        $model->sizeTo = $params['sizeTo'] ?? 3;
+        $model->images = $params['images'] ?? [];
+
+        foreach ($params['words'] as $k => $word) {
+            $model->words[$k] = $word['word'];
+            $model->wordsCount[$k] = $word['count'];
         }
-        if(!isset($model->sizeFrom)) {
-            $model->sizeFrom = 1;
+
+        foreach ($params['keyword'] as $k => $keyword) {
+            $key = 'keyword' . $k;
+            $model->$key = $keyword;
         }
-        if(!isset($model->sizeTo)) {
-            $model->sizeTo = 3;
-        }
+
         return $model;
     }
 }
