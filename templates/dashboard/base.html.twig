@@ -1,53 +1,60 @@
-{% extends 'base.html.twig' %}
-{% block header %}
-    {{ parent() }}
-    <div class="d-flex" id="wrapper">
-    {% block left_menu %}
-        <div class="bg-light border-right" id="sidebar-wrapper">
-            <div class="sidebar-heading">BlaBlaArticle</div>
-            <div class="list-group list-group-flush">
-                <a href="{{ path('app_dashboard') }}"           class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard' ? 'active' : 'bg-light' }}">Рабочий стол</a>
-                <a href="{{ path('app_dashboard_create') }}"    class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_create' ? 'active' : 'bg-light' }}">Создать статью</a>
-                <a href="{{ path('app_dashboard_history') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_history' ? 'active' : 'bg-light' }}">История статей</a>
-                <a href="{{ path('app_dashboard_subscribe') }}" class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_subscribe' ? 'active' : 'bg-light' }}">Подписка</a>
-                <a href="{{ path('app_dashboard_profile') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_profile' ? 'active' : 'bg-light' }}">Профиль</a>
-                {% if subscription_level_rights.canUseSelfModule %}
-                    <a href="{{ path('app_dashboard_modules') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_modules' ? 'active' : 'bg-light' }}">Модули генератора</a>
-                {% endif %}
-            </div>
-        </div>
-        <div id="page-content-wrapper">
-        {% block top_menu %}
-            <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                <button class="btn btn-primary" id="menu-toggle"><span>Скрыть меню</span></button>
-
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Показать/Скрыть навигацию">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Выйти</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-            <div class="container-fluid">
-                <h1 class="mt-4">{% block title %}{% endblock %}</h1>
-        {% endblock %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Личный кабинет</title>
+    {% block style %}
+        <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     {% endblock %}
-{% endblock %}
-
-{% block content %}{% endblock %}
-
-
-{% block footer %}
-            </div>
+</head>
+<body>
+<div class="d-flex" id="wrapper">
+{% block left_menu %}
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">BlaBlaArticle</div>
+        <div class="list-group list-group-flush">
+            <a href="{{ path('app_dashboard') }}"           class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard' ? 'active' : 'bg-light' }}">Рабочий стол</a>
+            <a href="{{ path('app_dashboard_create') }}"    class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_create' ? 'active' : 'bg-light' }}">Создать статью</a>
+            <a href="{{ path('app_dashboard_history') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_history' ? 'active' : 'bg-light' }}">История статей</a>
+            <a href="{{ path('app_dashboard_subscribe') }}" class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_subscribe' ? 'active' : 'bg-light' }}">Подписка</a>
+            <a href="{{ path('app_dashboard_profile') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_profile' ? 'active' : 'bg-light' }}">Профиль</a>
+            {% if subscription_level_rights.canUseSelfModule %}
+                <a href="{{ path('app_dashboard_modules') }}"   class="list-group-item list-group-item-action {{ app.request.get('_route') == 'app_dashboard_modules' ? 'active' : 'bg-light' }}">Модули генератора</a>
+            {% endif %}
         </div>
     </div>
-    {% block footer_scripts %}
-        {{ parent() }}
-        <script src="{{ asset('js/dashboard.js') }}"></script>
-    {% endblock %}
+    <div id="page-content-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <button class="btn btn-primary" id="menu-toggle"><span>Скрыть меню</span></button>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Показать/Скрыть навигацию">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('app_logout') }}">Выйти</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container-fluid">
+            <h1 class="mt-4">{% block title %}{% endblock %}</h1>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 {% endblock %}
+</div>
+
+{% block footer_scripts %}
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('js/scripts.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
+{% endblock %}
+</body>

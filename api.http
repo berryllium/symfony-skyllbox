@@ -1,0 +1,25 @@
+POST https://localhost:8000/api/article/create
+Authorization: Bearer pkRFjFtiPGK8GHgH5OF8DHHVkBO-Tu97_o4wjOoZxKQ
+Content-Type: application/json
+
+{
+   "subject": "php",
+   "keyword": {
+       "0": "EXAMPLE1",
+       "1": "EXAMPLE",
+       "2": "EXAMPLE",
+       "3": "EXAMPLE",
+       "4": "EXAMPLE",
+       "5": "EXAAAAAMPLE",
+       "6": "EXAMPLES"
+   },
+   "title": "Тестовая статья",
+   "size": 1,
+   "words": [
+       {
+           "word": "EXAMPLE",
+           "count": 1
+       }
+   ],
+   "images": ["https://via.placeholder.com/250x250"]
+}

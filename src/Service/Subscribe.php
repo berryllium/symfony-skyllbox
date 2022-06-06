@@ -24,7 +24,7 @@ class Subscribe
      * @param string $tariff
      * @return bool
      */
-    public function subscribe(User $user, string $tariff) :bool {
+    public function subscribe(User &$user, string $tariff) :bool {
         $user->setTariff($tariff);
         $user->setSubscribeTo((new DateTime())->modify('+1 week'));
 
@@ -32,5 +32,19 @@ class Subscribe
         $this->em->flush();
         $this->dispatcher->dispatch(new UserSubscribedEvent($user));
         return true;
+    }
+
+    public function unsubscribe(User &$user) {
+        $user->setTariff(null);
+        $user->setSubscribeTo(null);
+        $this->em->persist($user);
+        $this->em->flush();
+        return true;
+    }
+
+    public function checkSubscribe(User &$user) {
+        if($user->getSubscribeTo() <= new DateTime()) {
+            $this->unsubscribe($user);
+        }
     }
 }

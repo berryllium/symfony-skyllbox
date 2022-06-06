@@ -82,9 +82,11 @@ class ArticleGenerator
 
         // вставляем пути к картинкам
         $images = [];
-        foreach ($model->images as $file) {
-            /** @var UploadedFile $file */
-            $images[] = $this->fileUploader->uploadFile($file, $file->getBasename());
+        foreach ($model->images as $image) {
+            if($image instanceof UploadedFile) {
+                /** @var UploadedFile $image */
+                $images[] = $this->fileUploader->uploadFile($image, $image->getBasename());
+            }
         }
         shuffle($images);
         preg_match_all('#imageSrc#', $body, $matches);
@@ -117,6 +119,7 @@ class ArticleGenerator
             shuffle($words);
             $textArr = explode(' ', $body);
             $keys = array_rand($textArr, count($words));
+            $keys = is_array($keys) ? $keys : [$keys];
             foreach ($keys as $i => $key) {
                 array_splice($textArr, $key + 1, 0, $words[$i]);
                 unset($words[$i]);
@@ -134,6 +137,7 @@ class ArticleGenerator
 
         $article
             ->setTitle($title)
+            ->setDescription($subject->getDescription())
             ->setAuthor($user)
             ->setBody($body)
         ;

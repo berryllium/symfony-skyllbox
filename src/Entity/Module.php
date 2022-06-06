@@ -31,7 +31,7 @@ class Module
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="modules")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $user;
 

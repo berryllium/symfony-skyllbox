@@ -7,6 +7,7 @@ use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
 use App\Security\AppCustomAuthenticator;
 use App\Security\EmailVerifier;
+use App\Service\TokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,7 +31,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/register", name="app_register")
      */
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppCustomAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, AppCustomAuthenticator $authenticator, EntityManagerInterface $entityManager, TokenGenerator $tokenGenerator): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -44,9 +45,10 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-
             $entityManager->persist($user);
             $entityManager->flush();
+
+            $tokenGenerator->generate($user);
 
             // generate a signed url and email it to the user
 

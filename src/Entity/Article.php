@@ -41,6 +41,11 @@ class Article
      */
     private $slug;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $description;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +95,18 @@ class Article
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): self
+    {
+        $this->description = $description;
 
         return $this;
     }
