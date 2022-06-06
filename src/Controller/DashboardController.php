@@ -38,13 +38,17 @@ class DashboardController extends AbstractController
         if($date < $user->getSubscribeTo()) {
             $diff = $date->diff($user->getSubscribeTo())->days;
         }
+
+        $articles = $articleRepository->getLastUserArticles($user->getId());
+        $article = count($articles) ? array_pop($articles) : null;
+
         return $this->render('dashboard/index.html.twig', [
             'diff' => $diff < 3 ? $diff : false,
             'count_articles' => $articleRepository->getCountUserArticles($user->getId()),
             'count_articles_month' => $articleRepository->getCountUserArticlesFromDate(
                 $user->getId(), \DateTime::createFromFormat('d.m.Y H:i:s', date('01.m.Y 00:00:00'))
             ),
-            'last_article' => $articleRepository->getLastUserArticles($user->getId()),
+            'last_article' => $article,
         ]);
     }
 

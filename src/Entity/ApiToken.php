@@ -78,4 +78,9 @@ class ApiToken
     {
         return $this->getExpiresAt() <= new \DateTime();
     }
+
+    public function generate() {
+        $this->token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
+        $this->expiresAt = (new \DateTime())->modify('+1 week');
+    }
 }

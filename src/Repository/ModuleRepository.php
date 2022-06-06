@@ -48,7 +48,7 @@ class ModuleRepository extends ServiceEntityRepository
 
     public function getModules($user_id = false) {
         $result = $this->createQueryBuilder('m')
-            ->andWhere('m.user = 0');
+            ->andWhere('m.user IS NULL');
         if($user_id) {
             $result->orWhere('m.user = :val');
         }

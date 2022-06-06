@@ -62,7 +62,7 @@ class ArticleRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->orderBy('a.id', 'desc')
             ->getQuery()
-            ->getSingleResult()
+            ->getResult()
             ;
     }
 

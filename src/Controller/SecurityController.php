@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ApiToken;
 use App\Entity\User;
 use App\Repository\ApiTokenRepository;
+use App\Service\TokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -38,20 +39,10 @@ class SecurityController extends AbstractController
     /**
      * @Route ("/generate_token", name="app_generate_token")
      */
-    public function generateToken(EntityManagerInterface $em, ApiTokenRepository $apiTokenRepository) {
+    public function generateToken(TokenGenerator $tokenGenerator) {
         /** @var User $user */
         $user = $this->getUser();
-        $token = rtrim(strtr(base64_encode(random_bytes(32)), '+/', '-_'), '=');
-        $date = (new \DateTime())->modify('+1 week');
-        $apiToken = $apiTokenRepository->findOneBy(['user' => $user]);
-        if(!$apiToken) {
-            $apiToken = (new ApiToken())->setUser($user);
-        }
-        $apiToken
-            ->setToken($token)
-            ->setExpiresAt($date);
-        $em->persist($apiToken);
-        $em->flush();
+        $tokenGenerator->generate($user);
         return $this->redirectToRoute('app_dashboard_profile');
     }
 }
